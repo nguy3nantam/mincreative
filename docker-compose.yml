@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    container_name: min_creative_web
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mincreative.rule=Host(`minhuynhcreative.com`) || Host(`www.minhuynhcreative.com`)"
+      - "traefik.http.routers.mincreative.entrypoints=websecure"
+      - "traefik.http.routers.mincreative.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mincreative.loadbalancer.server.port=80"
+    healthcheck:
+      # Alpine resolves localhost to ::1 first, while this nginx config listens
+      # on IPv4. Use the explicit loopback address so Traefik sees a healthy
+      # backend and activates the domain router.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

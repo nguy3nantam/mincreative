@@ -1,0 +1,10 @@
+{
+	email webmaster@minhuynhcreative.com
+}
+
+minhuynhcreative.com, www.minhuynhcreative.com {
+	encode gzip
+
+	# min-creative web container
+	reverse_proxy min_web:80
+}
